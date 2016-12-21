@@ -21,15 +21,15 @@
 		delete from t_user
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
-
-	<insert id="insert" parameterType="com.model.User" useGeneratedKeys="true" keyProperty="id">
+<!-- useGeneratedKeys="true" keyProperty="id" -->
+	<insert id="insert" parameterType="com.model.User" >
 		insert into t_user (id, user_name, pwd,
 		age)
 		values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
 		#{age,jdbcType=INTEGER})
-		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+ 		<!-- <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
 			SELECT LAST_INSERT_ID()
-		</selectKey>
+		</selectKey> -->
 	</insert>
 	<insert id="insertSelective" parameterType="com.model.User">
 		insert into t_user

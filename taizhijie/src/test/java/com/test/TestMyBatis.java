@@ -1,5 +1,9 @@
 package com.test;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +30,50 @@ public class TestMyBatis {
 
 	@Test
 	public void test1() {
-		System.out.println(userService);
+		logger.error("start");
 		User user = userService.getUserById(1);
-		System.out.println(user.getUserName());
-		logger.info("值：" + user.getUserName());
-		user.setId(null);
-		userService.saveUser(user);
+		ExecutorService pool = Executors.newFixedThreadPool(1);
+		ThreadPoolExecutor tx = (ThreadPoolExecutor) pool;
+		for (int i = 2; i <= 1000000; i++) {
+			User u = new User();
+			u.setAge((int)Math.random());
+			u.setUserName("Ln " + (int)Math.random());
+			u.setPwd("wpddsa13c");
+//			u.setId(i);
+			ThreadInert t = new ThreadInert(userService, u);
+			Thread th = new Thread(t);
+			tx.execute(th);
+			// userService.saveUser(user);
+            while (true) {
+                long todoTotal = tx.getTaskCount() - tx.getCompletedTaskCount();
+                if (todoTotal >= 2000) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                    }
+                } else {
+                    break;
+                }
+            }
+		}
+		logger.error("end");
+	}
+}
+
+class ThreadInert implements Runnable {
+	private UserService userService;
+	private User user;
+
+	public ThreadInert(UserService userService, User user) {
+		this.userService = userService;
+		this.user = user;
+	}
+
+	public void run() {
+		try {
+			userService.saveUser(user);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

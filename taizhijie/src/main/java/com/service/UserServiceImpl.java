@@ -23,8 +23,5 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void saveUser(User user) {
 		int rs = userDao.insert(user);
-		System.out.println(user.getId());
-		System.out.println(rs);
-		throw new RuntimeException();
 	}
 }

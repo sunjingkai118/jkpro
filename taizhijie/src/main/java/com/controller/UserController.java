@@ -16,9 +16,14 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@RequestMapping("/test")
+	public String test() {
+		return "test";
+	}
+
 	@RequestMapping("/showUser/{userId}")
-	public String toIndex(@PathVariable("userId") Integer userId,HttpServletRequest request, HttpServletResponse response, Model model) {
-//		int userId = Integer.parseInt(request.getParameter("id"));
+	public String toIndex(@PathVariable("userId") Integer userId, HttpServletRequest request,
+			HttpServletResponse response, Model model) {
 		User user = this.userService.getUserById(userId);
 		model.addAttribute("user", user);
 		return "showUser";
